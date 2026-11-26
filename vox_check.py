@@ -29,7 +29,7 @@ def notify(title, msg):
 
 def get_dates():
     with sync_playwright() as p:
-        browser = p.chromium.launch(args=["--disable-blink-features=AutomationControlled"])
+        browser = p.chromium.launch(args=["--disable-blink-features=AutomationControlled", "--disable-http2"])
         ctx = browser.new_context(
             locale="ar-EG",
             user_agent=(
@@ -76,4 +76,14 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--loop" in sys.argv:  # for running on your own PC: python vox_check.py --loop
+        import random
+        import time
+
+        while True:
+            try:
+                main()
+            except Exception as e:
+                print("error:", repr(e)[:300])
+            time.sleep(180 + random.randint(0, 30))
     sys.exit(main())
